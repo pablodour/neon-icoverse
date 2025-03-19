@@ -21,7 +21,7 @@ const Logo = () => {
 
   return (
     <Icosahedron args={[1, 1]} ref={meshRef}>
-      <Wireframe thickness={0.015} color="#39FF14" />
+      <Wireframe thickness={0.015} />
       <meshStandardMaterial 
         color="black"
         emissive="#39FF14"
