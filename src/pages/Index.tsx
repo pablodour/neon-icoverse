@@ -1,13 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import Hero from '@/components/Hero';
 import Navbar from '@/components/Navbar';
 import Universe from '@/components/Universe';
 import Events from '@/components/Events';
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('home');
-  const homeRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState('universe');
   const universeRef = useRef<HTMLDivElement>(null);
   const eventsRef = useRef<HTMLDivElement>(null);
   
@@ -27,7 +25,6 @@ const Index = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
       
       const sections = [
-        { id: 'home', ref: homeRef },
         { id: 'universe', ref: universeRef },
         { id: 'events', ref: eventsRef }
       ];
@@ -55,11 +52,7 @@ const Index = () => {
     <div className="min-h-screen bg-dark text-light overflow-hidden">
       <Navbar onNavigate={handleNavigate} activeSection={activeSection} />
       
-      <div ref={homeRef}>
-        <Hero />
-      </div>
-      
-      <div ref={universeRef}>
+      <div ref={universeRef} className="pt-16">
         <Universe />
       </div>
       

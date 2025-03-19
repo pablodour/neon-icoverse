@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 
@@ -66,12 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
         
         <nav aria-label="Main navigation">
           <ul className="flex space-x-2 md:space-x-8">
-            <NavItem 
-              title="Home" 
-              href="#home" 
-              active={activeSection === 'home'} 
-              onClick={() => onNavigate('home')} 
-            />
             <NavItem 
               title="Universe" 
               href="#universe" 
