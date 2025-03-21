@@ -1,6 +1,7 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { universeData, Artist,  aboutUsContent } from '@/utils/data';
+import { universeData, Artist, aboutUsContent } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
 
 const Universe: React.FC = () => {
@@ -121,4 +122,3 @@ const Universe: React.FC = () => {
 };
 
 export default Universe;
-
