@@ -104,19 +104,20 @@ const Universe: React.FC = () => {
         <ArtistProfile artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
       )}
 
-      {showAboutUs && (
-        <ArtistProfile
-          artist={{
-            name: aboutUsContent.title,
-            category: '',
-            subCategory: '',
-            info: `${aboutUsContent.concept}\n\n${aboutUsContent.vision}\n\n${aboutUsContent.rules}`,
-            imageUrl: '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png',
-            instagramUrl: ''
-          }}
-          onClose={() => setShowAboutUs(false)}
-        />
-      )}
+        {showAboutUs && (
+          <ArtistProfile
+            artist={{
+              id: aboutUsContent.id,
+              name: aboutUsContent.title,
+              category: 'Information',
+              subCategory: 'About Bad Habits',
+              info: `${aboutUsContent.concept}\n\n${aboutUsContent.vision}\n\n${aboutUsContent.rules}`,
+              imageUrl: '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png',
+              instagramUrl: ''
+            }}
+            onClose={() => setShowAboutUs(false)}
+          />
+        )}
     </section>
   );
 };
