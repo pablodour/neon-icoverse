@@ -235,6 +235,7 @@ export const findArtistById = (id: string): Artist | undefined => {
 
 // About Us content for the central node
 export const aboutUsContent = {
+  id: "about-us",
   title: 'ABOUT US',
   concept: 'OUR CONCEPT\nBAD HABITS is an interdisciplinary club concept based on different art forms curated on the same dancefloor.',
   vision: 'OUR VISION\nOur vision is to give local artists, performers, and creative beings a platform to express themselves. We want to contribute to a community where individuals feel safer expressing themselves and being themselves. We want to challenge Oslo\'s club scene with more elements of performance and visual art as decor to give an ever-changing atmosphere.',
