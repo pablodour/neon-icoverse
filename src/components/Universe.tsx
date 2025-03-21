@@ -37,8 +37,8 @@ const Universe: React.FC = () => {
     // Create hierarchy and layout
     const root = d3.hierarchy(universeData);
     const treeLayout = d3.tree()
-      .size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2.5]);
-    
+    .size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2 - 100]);  // Added padding
+
     treeLayout(root);
 
     // Draw links
@@ -57,46 +57,55 @@ const Universe: React.FC = () => {
 
     // Draw nodes
     const node = svg.append('g')
-      .selectAll('g')
-      .data(root.descendants())
-      .join('g')
-      .attr(
-        'transform',
-        d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`
-      )
-      .attr('class', 'node-enter')
-      .on('click', (event, d) => {
-        event.stopPropagation();
-        if (d.data.artists && d.data.artists.length > 0) {
-          setSelectedArtist(d.data.artists[0]);
-        }
-      })
-      .on('mouseover', function (event, d) {
-        d3.select(this).transition()
-          .duration(300)
-          .attr('transform', `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0) scale(1.2)`);
-      })
-      .on('mouseout', function (event, d) {
-        d3.select(this).transition()
-          .duration(300)
-          .attr('transform', `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0) scale(1)`);
-      });
+  .selectAll('g')
+  .data(root.descendants())
+  .join('g')
+  .attr('transform', d => `
+    rotate(${(d.x * 180) / Math.PI - 90}) 
+    translate(${d.y},0)
+  `)
+  .on('click', (event, d) => {
+    event.stopPropagation();
+    if (d.data.artists && d.data.artists.length > 0) {
+      setSelectedArtist(d.data.artists[0]);
+    }
+  })
+  .on('mouseover', function (event, d) {
+    d3.select(this).transition()
+      .duration(300)
+      .attr('transform', `
+        rotate(${(d.x * 180) / Math.PI - 90}) 
+        translate(${d.y},0) 
+        scale(1.1)
+      `);
+  })
+  .on('mouseout', function (event, d) {
+    d3.select(this).transition()
+      .duration(300)
+      .attr('transform', `
+        rotate(${(d.x * 180) / Math.PI - 90}) 
+        translate(${d.y},0) 
+        scale(1)
+      `);
+  });
 
-    // Add circles for nodes
-    node.append('circle')
-      .attr('r', d => d.data.artists ? 8 : 6)
-      .attr('fill', d => d.data.artists ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)')
-      .attr('stroke', d => d.data.artists ? 'rgba(57, 255, 20, 0.7)' : 'transparent')
-      .attr('stroke-width', 2);
+// Circle nodes
+node.append('circle')
+  .attr('r', d => d.data.artists ? 6 : 4)
+  .attr('fill', d => d.data.artists ? '#39FF14' : 'rgba(255,255,255,0.8)')
+  .attr('stroke', 'white')
+  .attr('stroke-width', 1);
 
-    // Add node labels
-    node.append('text')
-      .attr('dy', '0.31em')
-      .attr('x', d => (d.x < Math.PI === !d.children ? 6 : -6))
-      .attr('text-anchor', d => d.x < Math.PI === !d.children ? 'start' : 'end')
-      .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
-      .attr('fill', 'white')
-      .text(d => d.data.name);
+// Node labels with improved readability and smaller size
+node.append('text')
+  .attr('dy', '0.35em')
+  .attr('x', d => (d.x < Math.PI === !d.children ? 10 : -10))
+  .attr('text-anchor', d => d.x < Math.PI === !d.children ? 'start' : 'end')
+  .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+  .attr('fill', 'white')
+  .attr('font-size', '10px')  // Reduced font size
+  .text(d => d.data.name);
+
 
     // Reset when clicking on background
     svg.on('click', () => {
