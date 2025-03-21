@@ -2,25 +2,6 @@
 import * as d3 from 'd3';
 import { TreeNode } from './data';
 
-// Calculate the tree layout
-export const calculateRadialTreeLayout = (
-  data: TreeNode,
-  width: number,
-  height: number
-) => {
-  // Set up hierarchy
-  const root = d3.hierarchy(data);
-  
-  // Calculate the tree layout
-  const radius = Math.min(width, height) / 2;
-  const treeLayout = d3.tree<TreeNode>()
-    .size([2 * Math.PI, radius * 0.8])
-    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
-  
-  // Apply layout
-  return treeLayout(root);
-};
-
 // Convert polar coordinates to Cartesian
 export const project = (x: number, y: number) => {
   const angle = x - Math.PI / 2;
@@ -44,6 +25,7 @@ export const generateLinkPath = (
     });
 };
 
+// Zoom to a specific node
 export const zoomToNode = (
   node: d3.HierarchyNode<TreeNode>,
   width: number, 
@@ -67,6 +49,7 @@ export const zoomToNode = (
   setTransform({ x: tx, y: ty, k: scale });
 };
 
+// Reset zoom to default view
 export const resetZoom = (
   width: number, 
   height: number,
@@ -76,4 +59,23 @@ export const resetZoom = (
   const centerX = width / 2;
   const centerY = height / 2;
   setTransform({ x: centerX, y: centerY, k: 1 });
+};
+
+// Calculate the tree layout
+export const calculateRadialTreeLayout = (
+  data: TreeNode,
+  width: number,
+  height: number
+) => {
+  // Set up hierarchy
+  const root = d3.hierarchy(data);
+  
+  // Calculate the tree layout
+  const radius = Math.min(width, height) / 2;
+  const treeLayout = d3.tree<TreeNode>()
+    .size([2 * Math.PI, radius * 0.8])
+    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+  
+  // Apply layout
+  return treeLayout(root);
 };

@@ -1,23 +1,14 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { universeData, Artist, TreeNode } from '@/utils/data';
-import { 
-  calculateRadialTreeLayout, 
-  project, 
-  generateLinkPath,
-  zoomToNode,
-  resetZoom
-} from '@/utils/visualizationUtils';
+import { universeData, Artist } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const [highlightedNode, setHighlightedNode] = useState<string | null>(null);
 
   // Update dimensions on resize
   useEffect(() => {
@@ -25,18 +16,11 @@ const Universe: React.FC = () => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
         setDimensions({ width, height });
-        // Reset the transform to center the visualization
-        setTransform({ 
-          x: width / 2, 
-          y: height / 2, 
-          k: 1 
-        });
       }
     };
 
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
-
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
@@ -45,98 +29,81 @@ const Universe: React.FC = () => {
     if (!svgRef.current || dimensions.width === 0) return;
 
     // Clear previous visualization
-    const svg = d3.select(svgRef.current);
+    const svg = d3.select(svgRef.current)
+      .attr('viewBox', [-dimensions.width / 2, -dimensions.height / 2, dimensions.width, dimensions.height]);
+    
     svg.selectAll('*').remove();
 
-    // Create the group that will be transformed
-    const g = svg.append('g')
-      .attr('transform', `translate(${transform.x},${transform.y}) scale(${transform.k})`);
-
-    // Calculate the layout
-    const root = calculateRadialTreeLayout(
-      universeData,
-      dimensions.width,
-      dimensions.height
-    );
+    // Create hierarchy and layout
+    const root = d3.hierarchy(universeData);
+    const treeLayout = d3.tree()
+      .size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2.5]);
+    
+    treeLayout(root);
 
     // Draw links
-    g.selectAll('.link')
+    const linkGenerator = d3.linkRadial()
+      .angle(d => d.x)
+      .radius(d => d.y);
+
+    svg.append('g')
+      .selectAll('path')
       .data(root.links())
-      .enter()
-      .append('path')
-      .attr('class', 'link')
-      .attr('d', d => generateLinkPath(d.source, d.target))
+      .join('path')
       .attr('fill', 'none')
-      .attr('stroke', d => 
-        (highlightedNode && (d.source.data.id === highlightedNode || d.target.data.id === highlightedNode))
-          ? '#39FF14'
-          : 'rgba(255, 255, 255, 0.3)'
-      )
-      .attr('stroke-width', d => 
-        (highlightedNode && (d.source.data.id === highlightedNode || d.target.data.id === highlightedNode))
-          ? 2
-          : 1
-      )
-      .classed('link-draw', true);
+      .attr('stroke', 'rgba(255, 255, 255, 0.3)')
+      .attr('d', linkGenerator)
+      .attr('class', 'link-draw');
 
     // Draw nodes
-    const nodes = g.selectAll('.node')
+    const node = svg.append('g')
+      .selectAll('g')
       .data(root.descendants())
-      .enter()
-      .append('g')
-      .attr('class', d => `node node-${d.data.id}`)
-      .attr('transform', d => {
-        const [x, y] = project(d.x, d.y);
-        return `translate(${x},${y})`;
-      })
-      .classed('node-enter', true);
-
-    // Add circles for nodes
-    nodes.append('circle')
-      .attr('r', d => d.data.artists ? 8 : 6)
-      .attr('fill', d => {
-        if (highlightedNode === d.data.id) return '#39FF14';
-        return d.data.artists ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)';
-      })
-      .attr('stroke', d => {
-        if (highlightedNode === d.data.id) return '#39FF14';
-        return d.data.artists ? 'rgba(57, 255, 20, 0.7)' : 'transparent';
-      })
-      .attr('stroke-width', 2)
-      .attr('class', 'transition-all duration-300')
-      .on('mouseover', (event, d) => {
-        setHighlightedNode(d.data.id);
-      })
-      .on('mouseout', () => {
-        setHighlightedNode(null);
-      })
+      .join('g')
+      .attr(
+        'transform',
+        d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`
+      )
+      .attr('class', 'node-enter')
       .on('click', (event, d) => {
         event.stopPropagation();
         if (d.data.artists && d.data.artists.length > 0) {
           setSelectedArtist(d.data.artists[0]);
-        } else {
-          // Zoom to the node when clicked
-          zoomToNode(d, dimensions.width, dimensions.height, setTransform);
         }
+      })
+      .on('mouseover', function (event, d) {
+        d3.select(this).transition()
+          .duration(300)
+          .attr('transform', `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0) scale(1.2)`);
+      })
+      .on('mouseout', function (event, d) {
+        d3.select(this).transition()
+          .duration(300)
+          .attr('transform', `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0) scale(1)`);
       });
 
-    // Add node labels
-    nodes.append('text')
-      .attr('dy', d => d.children ? -15 : 20)
-      .attr('text-anchor', 'middle')
-      .attr('font-size', '12px')
-      .attr('fill', d => 
-        highlightedNode === d.data.id ? '#39FF14' : 'rgba(255, 255, 255, 0.9)'
-      )
-      .text(d => d.data.name)
-      .attr('pointer-events', 'none');
+    // Add circles for nodes
+    node.append('circle')
+      .attr('r', d => d.data.artists ? 8 : 6)
+      .attr('fill', d => d.data.artists ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)')
+      .attr('stroke', d => d.data.artists ? 'rgba(57, 255, 20, 0.7)' : 'transparent')
+      .attr('stroke-width', 2);
 
-    // Add click handler to the background to reset zoom
+    // Add node labels
+    node.append('text')
+      .attr('dy', '0.31em')
+      .attr('x', d => (d.x < Math.PI === !d.children ? 6 : -6))
+      .attr('text-anchor', d => d.x < Math.PI === !d.children ? 'start' : 'end')
+      .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+      .attr('fill', 'white')
+      .text(d => d.data.name);
+
+    // Reset when clicking on background
     svg.on('click', () => {
-      resetZoom(dimensions.width, dimensions.height, setTransform);
+      // Only reset the view, don't clear selection
     });
 
-  }, [dimensions, transform, highlightedNode]);
+  }, [dimensions]);
 
   return (
     <section id="universe" className="min-h-screen bg-dark py-20 px-6">
@@ -145,7 +112,7 @@ const Universe: React.FC = () => {
           <h2 className="section-title">Universe</h2>
           <p className="text-light/70 max-w-2xl mx-auto">
             Explore our ecosystem of artists through this interactive visualization. 
-            Click on nodes to navigate and discover artists in our universe.
+            Click on nodes to discover artists in our universe.
           </p>
         </div>
         
@@ -160,16 +127,6 @@ const Universe: React.FC = () => {
             height={dimensions.height}
             className="w-full h-full"
           />
-        </div>
-        
-        <div className="flex justify-center mt-6">
-          <button 
-            onClick={() => resetZoom(dimensions.width, dimensions.height, setTransform)}
-            className="px-4 py-2 border border-neon/50 rounded-md hover:bg-neon/10 transition-all duration-300"
-            aria-label="Reset visualization zoom"
-          >
-            Reset View
-          </button>
         </div>
       </div>
       
