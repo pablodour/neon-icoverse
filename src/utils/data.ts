@@ -5,7 +5,7 @@ export const aboutUsContent = {
   concept: "OUR CONCEPT BAD HABITS is an interdisciplinary club concept based on different art forms curated on the same dancefloor.",
   vision: "OUR VISION Our vision is to give local artists, performers, and creative beings a platform to express themselves. We want to contribute to a community where individuals feel safer expressing themselves and being themselves. We want to challenge Oslo’s club scene with more elements of performance and visual art as decor to give an ever-changing atmosphere.",
   rules: "OUR RULES BAD HABITS is a tolerant place where you can blossom as you are as long as you come with peace and respect for those around you. You can contact contact@badhabits.no for giving us feedback so that we can always give you the best experience when you’re with us. BAD HABITS has zero tolerance for discrimination hate speech, or sexual harassment. If this occurs, you can contact the guards or the event organizer «Perosh.» Discrimination can result in forever being banned from our events and a possible police report. Your BAD HABITS are welcome, but discrimination is not one of these habits."
-};
+}
 
 export interface Artist {
   id: string;
