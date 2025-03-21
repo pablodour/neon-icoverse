@@ -1,7 +1,6 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { universeData, Artist, aboutUsContent } from '@/utils/data';
+import { universeData, Artist } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
 
 const Universe: React.FC = () => {
@@ -9,7 +8,6 @@ const Universe: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const [showAboutUs, setShowAboutUs] = useState(false);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -56,8 +54,7 @@ const Universe: React.FC = () => {
       .join('g')
       .attr('transform', d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`)
       .on('click', (_, d) => {
-        if (d.depth === 0) setShowAboutUs(true);
-        else if (d.data.artists) setSelectedArtist(d.data.artists[0]);
+        if (d.data.artists) setSelectedArtist(d.data.artists[0]);
       });
 
     node.append('circle')
@@ -83,6 +80,16 @@ const Universe: React.FC = () => {
       .attr('height', 20)
       .attr('clip-path', 'circle(10px)');
 
+    node.filter(d => !d.data.artists && d.depth !== 0)
+      .append('text')
+      .attr('dy', '0.35em')
+      .attr('x', d => (d.x < Math.PI ? 8 : -8))
+      .attr('text-anchor', d => d.x < Math.PI ? 'start' : 'end')
+      .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+      .attr('fill', '#fff')
+      .attr('font-size', '10px')
+      .text(d => d.data.name);
+
   }, [dimensions]);
 
   return (
@@ -103,41 +110,6 @@ const Universe: React.FC = () => {
       {selectedArtist && (
         <ArtistProfile artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
       )}
-
-{showAboutUs && (
-  <ArtistProfile
-    artist={{
-      id: "about-us",
-      name: aboutUsContent.title,
-      category: '',
-      subCategory: '',
-      info: '',
-      imageUrl: '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png',
-      instagramUrl: '',
-    }}
-    onClose={() => setShowAboutUs(false)}
-  >
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-neon-green">{aboutUsContent.title}</h2>
-
-      <section>
-        <h3 className="text-lg font-semibold text-neon-green">OUR CONCEPT</h3>
-        <p className="text-white">{aboutUsContent.concept}</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-neon-green">OUR VISION</h3>
-        <p className="text-white">{aboutUsContent.vision}</p>
-      </section>
-
-      <section>
-        <h3 className="text-lg font-semibold text-neon-green">OUR RULES</h3>
-        <p className="text-white whitespace-pre-line">{aboutUsContent.rules}</p>
-      </section>
-    </div>
-  </ArtistProfile>
-)}
-
     </section>
   );
 };
