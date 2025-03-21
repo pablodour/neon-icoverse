@@ -3,9 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Universe from '@/components/Universe';
 import Events from '@/components/Events';
+import VideoBackground from '@/components/VideoBackground';
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('universe');
+  const [activeSection, setActiveSection] = useState('videoBackground');
+  const videoBackgroundRef = useRef<HTMLDivElement>(null);
   const universeRef = useRef<HTMLDivElement>(null);
   const eventsRef = useRef<HTMLDivElement>(null);
   
@@ -25,6 +27,7 @@ const Index = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
       
       const sections = [
+        { id: 'videoBackground', ref: videoBackgroundRef },
         { id: 'universe', ref: universeRef },
         { id: 'events', ref: eventsRef }
       ];
@@ -52,11 +55,15 @@ const Index = () => {
     <div className="min-h-screen bg-dark text-light overflow-hidden">
       <Navbar onNavigate={handleNavigate} activeSection={activeSection} />
       
-      <div ref={universeRef} className="pt-16">
+      <div ref={videoBackgroundRef} id="videoBackground">
+        <VideoBackground />
+      </div>
+
+      <div ref={universeRef} id="universe" className="pt-16">
         <Universe />
       </div>
       
-      <div ref={eventsRef}>
+      <div ref={eventsRef} id="events">
         <Events />
       </div>
       
