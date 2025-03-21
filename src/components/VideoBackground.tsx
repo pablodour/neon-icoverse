@@ -16,7 +16,7 @@ const VideoBackground: React.FC = () => {
           aria-hidden="true"
         >
           <source 
-            src="https://player.vimeo.com/external/438342164.sd.mp4?s=94a01d4da412ead6c6d65e111d0db39be1dc098b&profile_id=164&oauth2_token_id=57447761" 
+            src="/lovable-uploads/fontVideo2_copy.mp4" 
             type="video/mp4" 
           />
           Your browser does not support the video tag.
