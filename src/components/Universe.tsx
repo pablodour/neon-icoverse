@@ -104,20 +104,40 @@ const Universe: React.FC = () => {
         <ArtistProfile artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
       )}
 
-        {showAboutUs && (
-          <ArtistProfile
-            artist={{
-              id: aboutUsContent.id,
-              name: aboutUsContent.title,
-              category: 'Information',
-              subCategory: 'About Bad Habits',
-              info: `${aboutUsContent.concept}\n\n${aboutUsContent.vision}\n\n${aboutUsContent.rules}`,
-              imageUrl: '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png',
-              instagramUrl: ''
-            }}
-            onClose={() => setShowAboutUs(false)}
-          />
-        )}
+{showAboutUs && (
+  <ArtistProfile
+    artist={{
+      id: "about-us",
+      name: aboutUsContent.title,
+      category: '',
+      subCategory: '',
+      info: '',
+      imageUrl: '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png',
+      instagramUrl: '',
+    }}
+    onClose={() => setShowAboutUs(false)}
+  >
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-neon-green">{aboutUsContent.title}</h2>
+
+      <section>
+        <h3 className="text-lg font-semibold text-neon-green">OUR CONCEPT</h3>
+        <p className="text-white">{aboutUsContent.concept}</p>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-neon-green">OUR VISION</h3>
+        <p className="text-white">{aboutUsContent.vision}</p>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-neon-green">OUR RULES</h3>
+        <p className="text-white whitespace-pre-line">{aboutUsContent.rules}</p>
+      </section>
+    </div>
+  </ArtistProfile>
+)}
+
     </section>
   );
 };
