@@ -26,7 +26,7 @@ const VideoBackground: React.FC = () => {
       {/* Content overlay */}
       <div className="relative z-10 container mx-auto px-6 flex flex-col items-center">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-4 animate-fade-in neon-text">
-          Bad Habits Web
+          Bad Habits
         </h1>
         
         <p className="text-lg md:text-xl text-light/80 text-center max-w-2xl mb-8 animate-slide-up">

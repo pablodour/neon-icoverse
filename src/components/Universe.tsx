@@ -65,7 +65,7 @@ const Universe: React.FC = () => {
 
     node.filter(d => d.depth === 0)
       .append('image')
-      .attr('xlink:href', '/icon-central-node.svg') // Custom icon path
+      .attr('xlink:href', '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png')
       .attr('x', -12)
       .attr('y', -12)
       .attr('width', 24)

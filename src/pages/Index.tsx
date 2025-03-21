@@ -69,7 +69,7 @@ const Index = () => {
       
       <footer className="py-8 px-6 bg-black border-t border-white/10">
         <div className="container mx-auto text-center text-light/50 text-sm">
-          <p>&copy; {new Date().getFullYear()} Bad Habits Web. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Bad Habits. All rights reserved.</p>
           <p className="mt-2">
             Designed with accessibility and minimalism in mind.
           </p>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 
@@ -58,8 +59,15 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
     >
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <a href="#" className="text-xl md:text-2xl font-bold neon-text">
-            Bad Habits Web
+          <a href="#" className="flex items-center">
+            <img 
+              src="/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png" 
+              alt="Bad Habits Logo" 
+              className="h-8 w-auto mr-3" 
+            />
+            <span className="text-xl md:text-2xl font-bold neon-text">
+              Bad Habits
+            </span>
           </a>
         </div>
         
