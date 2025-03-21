@@ -8,6 +8,14 @@ export interface Artist {
   subCategory?: string;
 }
 
+export interface AboutUsContent {
+  id: string;
+  title: string;
+  concept: string;
+  vision: string;
+  rules: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -222,7 +230,8 @@ export const findArtistById = (id: string): Artist | undefined => {
   extractArtists(universeData);
   
   return allArtists.find(artist => artist.id === id);
-};
+}
+
 
 // About Us content for the central node
 export const aboutUsContent = {
