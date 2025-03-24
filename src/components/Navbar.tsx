@@ -65,9 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
               alt="Bad Habits Logo" 
               className="h-8 w-auto mr-3" 
             />
-            <span className="text-xl md:text-2xl font-bold neon-text">
-              Bad Habits
-            </span>
           </a>
         </div>
         

@@ -1,13 +1,16 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
+import { Instagram } from 'lucide-react';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -54,7 +57,11 @@ const Universe: React.FC = () => {
       .join('g')
       .attr('transform', d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`)
       .on('click', (_, d) => {
-        if (d.data.artists) setSelectedArtist(d.data.artists[0]);
+        if (d.depth === 0) {
+          setShowBadHabitsInfo(true);
+        } else if (d.data.artists) {
+          setSelectedArtist(d.data.artists[0]);
+        }
       });
 
     node.append('circle')
@@ -92,6 +99,16 @@ const Universe: React.FC = () => {
 
   }, [dimensions]);
 
+  const badHabitsInfo = {
+    id: "badhabits",
+    name: "BAD HABITS",
+    info: "BAD HABITS is an interdisciplinary club concept based on different art forms curated on the same dancefloor.",
+    imageUrl: "/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png",
+    instagramUrl: "https://www.instagram.com/badhabits.oslo/",
+    category: "Club Concept",
+    subCategory: "Interdisciplinary Arts"
+  };
+
   return (
     <section id="universe" className="min-h-screen bg-dark py-20 px-6">
       <div className="container mx-auto">
@@ -109,6 +126,10 @@ const Universe: React.FC = () => {
 
       {selectedArtist && (
         <ArtistProfile artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
+      )}
+
+      {showBadHabitsInfo && (
+        <ArtistProfile artist={badHabitsInfo} onClose={() => setShowBadHabitsInfo(false)} />
       )}
     </section>
   );
