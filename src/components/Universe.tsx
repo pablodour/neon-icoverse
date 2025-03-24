@@ -1,9 +1,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { universeData, Artist } from '@/utils/data';
+import { universeData, Artist, TreeNode } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
-import { Instagram } from 'lucide-react';
+import { Instagram, Lightbulb, Shield } from 'lucide-react';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -11,6 +11,7 @@ const Universe: React.FC = () => {
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
+  const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string} | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -57,19 +58,38 @@ const Universe: React.FC = () => {
       .join('g')
       .attr('transform', d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`)
       .on('click', (_, d) => {
+        const nodeData = d.data as TreeNode;
         if (d.depth === 0) {
           setShowBadHabitsInfo(true);
-        } else if (d.data.artists) {
-          setSelectedArtist(d.data.artists[0]);
+        } else if (nodeData.artists) {
+          setSelectedArtist(nodeData.artists[0]);
+        } else if (nodeData.description) {
+          setShowNodeInfo({
+            id: nodeData.id,
+            name: nodeData.name,
+            info: nodeData.description
+          });
         }
       });
 
     node.append('circle')
-      .attr('r', d => d.depth === 0 ? 16 : d.data.artists ? 12 : 6)
-      .attr('fill', d => d.depth === 0 ? '#39FF14' : d.data.artists ? '#fff' : 'rgba(255,255,255,0.6)')
+      .attr('r', d => {
+        if (d.depth === 0) return 16;
+        if (d.data.artists) return 12;
+        if (d.data.description) return 14;
+        return 6;
+      })
+      .attr('fill', d => {
+        if (d.depth === 0) return '#39FF14';
+        if (d.data.artists) return '#fff';
+        if (d.data.id === 'vision') return '#FFD700'; // Gold for Vision
+        if (d.data.id === 'rules') return '#FF6B6B'; // Red for Rules
+        return 'rgba(255,255,255,0.6)';
+      })
       .attr('stroke', 'rgba(255,255,255,0.8)')
       .attr('stroke-width', 2);
 
+    // Add icons to special nodes
     node.filter(d => d.depth === 0)
       .append('image')
       .attr('xlink:href', '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png')
@@ -77,6 +97,24 @@ const Universe: React.FC = () => {
       .attr('y', -12)
       .attr('width', 24)
       .attr('height', 24);
+
+    // Add Vision icon
+    node.filter(d => d.data.id === 'vision')
+      .append('svg:foreignObject')
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('x', -10)
+      .attr('y', -10)
+      .html('<div style="color: black; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>');
+
+    // Add Rules icon
+    node.filter(d => d.data.id === 'rules')
+      .append('svg:foreignObject')
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('x', -10)
+      .attr('y', -10)
+      .html('<div style="color: black; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>');
 
     node.filter(d => d.data.artists)
       .append('image')
@@ -87,7 +125,7 @@ const Universe: React.FC = () => {
       .attr('height', 20)
       .attr('clip-path', 'circle(10px)');
 
-    node.filter(d => !d.data.artists && d.depth !== 0)
+    node.filter(d => !d.data.artists && d.depth !== 0 && !d.data.description)
       .append('text')
       .attr('dy', '0.35em')
       .attr('x', d => (d.x < Math.PI ? 8 : -8))
@@ -95,6 +133,18 @@ const Universe: React.FC = () => {
       .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
       .attr('fill', '#fff')
       .attr('font-size', '10px')
+      .text(d => d.data.name);
+
+    // Add labels for Vision and Rules nodes
+    node.filter(d => d.data.description)
+      .append('text')
+      .attr('dy', '0.35em')
+      .attr('x', d => (d.x < Math.PI ? 18 : -18))
+      .attr('text-anchor', d => d.x < Math.PI ? 'start' : 'end')
+      .attr('transform', d => d.x >= Math.PI ? 'rotate(180)' : null)
+      .attr('fill', '#fff')
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
       .text(d => d.data.name);
 
   }, [dimensions]);
@@ -130,6 +180,21 @@ const Universe: React.FC = () => {
 
       {showBadHabitsInfo && (
         <ArtistProfile artist={badHabitsInfo} onClose={() => setShowBadHabitsInfo(false)} />
+      )}
+
+      {showNodeInfo && (
+        <ArtistProfile 
+          artist={{
+            id: showNodeInfo.id,
+            name: showNodeInfo.name.toUpperCase(),
+            info: showNodeInfo.info,
+            imageUrl: "/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png",
+            instagramUrl: "https://www.instagram.com/badhabits.oslo/",
+            category: "BAD HABITS",
+            subCategory: showNodeInfo.name
+          }} 
+          onClose={() => setShowNodeInfo(null)} 
+        />
       )}
     </section>
   );
