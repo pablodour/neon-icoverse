@@ -61,10 +61,11 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
               return artist ? (
                 <button 
                   key={artistId}
-                  className="inline-block px-3 py-1 text-xs rounded-full border border-light/20 hover:border-neon/50 hover:text-neon transition-colors cursor-pointer"
+                  className="inline-block px-3 py-1 text-xs rounded-full border border-light/20 hover:border-neon hover:bg-neon/10 hover:text-neon transition-colors cursor-pointer relative group/artist"
                   onClick={() => handleArtistClick(artistId)}
                 >
                   {artist.name}
+                  <span className="absolute -inset-[2px] bg-neon/0 rounded-full group-hover/artist:bg-neon/10 group-hover/artist:shadow-[0_0_8px_rgba(57,255,20,0.6)] transition-all duration-300"></span>
                 </button>
               ) : null;
             })}

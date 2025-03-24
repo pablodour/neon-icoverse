@@ -57,6 +57,23 @@ const Universe: React.FC = () => {
       .data(root.descendants())
       .join('g')
       .attr('transform', d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`)
+      .attr('class', 'cursor-pointer')
+      .on('mouseover', function() {
+        d3.select(this).select('circle')
+          .transition()
+          .duration(300)
+          .attr('stroke', '#39FF14')
+          .attr('stroke-width', 3)
+          .attr('filter', 'drop-shadow(0 0 6px rgba(57,255,20,0.6))');
+      })
+      .on('mouseout', function() {
+        d3.select(this).select('circle')
+          .transition()
+          .duration(300)
+          .attr('stroke', 'rgba(255,255,255,0.8)')
+          .attr('stroke-width', 2)
+          .attr('filter', 'none');
+      })
       .on('click', (_, d) => {
         const nodeData = d.data as TreeNode;
         if (d.depth === 0) {
