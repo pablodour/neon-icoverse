@@ -82,6 +82,12 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
               active={activeSection === 'events'} 
               onClick={() => onNavigate('events')} 
             />
+            <NavItem
+              title="Contact"
+              href="#contact"
+              active={activeSection === 'contact'}
+              onClick={() => onNavigate('contact')}
+            />
           </ul>
         </nav>
       </div>
