@@ -1,4 +1,3 @@
-
 export interface Artist {
   id: string;
   name: string;
@@ -7,6 +6,7 @@ export interface Artist {
   instagramUrl: string;
   category: string;
   subCategory?: string;
+  isFaq?: boolean;
 }
 
 export interface Event {
@@ -31,7 +31,7 @@ export interface TreeNode {
 // Sample data for the Universe visualization
 export const universeData: TreeNode = {
   id: "root",
-  name: "Bad Habits",
+  name: "BAD HABITS",
   children: [
     {
       id: "electronic",
@@ -159,6 +159,11 @@ export const universeData: TreeNode = {
       id: "rules",
       name: "Rules",
       description: "BAD HABITS is a tolerant place where you can blossom as you are as long as you come with peace and respect for those around you can contact@badhabits.no for giving us feedback so that we can always give you the best experience when you're with us. BAD HABITS has zero tolerance for discrimination hate speech, or sexual harassment. If this occurs, you can contact the guards or the event organizer «Perosh.» Discrimination can result in forever being banned from our events and a possible police report. Your BAD HABITS are welcome, but discrimination is not one of these habits."
+    },
+    {
+      id: "faq",
+      name: "FAQ",
+      description: "Frequently asked questions about BAD HABITS events, policies, and community."
     }
   ]
 };

@@ -4,12 +4,14 @@ import Navbar from '@/components/Navbar';
 import Universe from '@/components/Universe';
 import Events from '@/components/Events';
 import VideoBackground from '@/components/VideoBackground';
+import Contact from '@/components/Contact';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('videoBackground');
   const videoBackgroundRef = useRef<HTMLDivElement>(null);
   const universeRef = useRef<HTMLDivElement>(null);
   const eventsRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
   
   // Handle navigation
   const handleNavigate = (section: string) => {
@@ -29,7 +31,8 @@ const Index = () => {
       const sections = [
         { id: 'videoBackground', ref: videoBackgroundRef },
         { id: 'universe', ref: universeRef },
-        { id: 'events', ref: eventsRef }
+        { id: 'events', ref: eventsRef },
+        { id: 'contact', ref: contactRef }
       ];
       
       for (const section of sections) {
@@ -65,6 +68,10 @@ const Index = () => {
       
       <div ref={eventsRef} id="events">
         <Events />
+      </div>
+      
+      <div ref={contactRef} id="contact">
+        <Contact />
       </div>
       
       <footer className="py-8 px-6 bg-black border-t border-white/10">

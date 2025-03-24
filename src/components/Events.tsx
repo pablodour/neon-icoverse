@@ -1,11 +1,12 @@
-
 import React, { useState } from 'react';
 import { eventsData, findArtistById, Event, Artist } from '@/utils/data';
-import { Calendar, MapPin, User } from 'lucide-react';
+import { Calendar, MapPin, User, Ticket, ChevronDown, ChevronUp } from 'lucide-react';
 import ArtistProfile from './ArtistProfile';
+import { Button } from './ui/button';
 
 const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const [expanded, setExpanded] = useState(false);
   
   const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -20,8 +21,12 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     }
   };
 
+  const toggleExpand = () => {
+    setExpanded(!expanded);
+  };
+
   return (
-    <div className="glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group">
+    <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
       <div className="aspect-[16/9] overflow-hidden relative">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
@@ -36,7 +41,16 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
       </div>
       
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-3 group-hover:text-neon transition-colors">{event.title}</h3>
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="text-xl font-bold group-hover:text-neon transition-colors">{event.title}</h3>
+          <button 
+            onClick={toggleExpand}
+            className="text-light/70 hover:text-neon transition-colors p-1"
+            aria-label={expanded ? "Collapse event details" : "Expand event details"}
+          >
+            {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+        </div>
         
         <div className="flex items-center text-sm text-light/70 mb-2">
           <Calendar size={14} className="mr-2" />
@@ -49,6 +63,15 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
         </div>
         
         <p className="text-sm text-light/80 mb-4">{event.description}</p>
+        
+        <div className={`transition-all duration-300 ${expanded ? 'block' : 'hidden'}`}>
+          <div className="border-t border-light/10 pt-4 mb-4">
+            <h4 className="text-md text-light/90 mb-2">Additional Information</h4>
+            <p className="text-sm text-light/70 mb-4">
+              Doors open at 9:00 PM. The event is for ages 21 and over. Please bring valid ID.
+            </p>
+          </div>
+        </div>
         
         <div className="border-t border-light/10 pt-4">
           <div className="flex items-center text-sm">
@@ -71,6 +94,18 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             })}
           </div>
         </div>
+        
+        {!event.isPast && (
+          <div className="mt-4">
+            <Button 
+              className="w-full bg-neon text-black hover:bg-neon/80 font-semibold"
+              onClick={() => window.open('https://tickets.badhabits.no', '_blank')}
+            >
+              <Ticket className="mr-1" size={16} />
+              Buy Tickets
+            </Button>
+          </div>
+        )}
       </div>
 
       {selectedArtist && (
@@ -176,4 +211,3 @@ const Events: React.FC = () => {
 };
 
 export default Events;
-

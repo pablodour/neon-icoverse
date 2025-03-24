@@ -40,17 +40,29 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
         </button>
         
         <div className="flex flex-col items-center">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-neon/50 animate-pulse-neon">
-            <img 
-              src={artist.imageUrl} 
-              alt={artist.name} 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "https://randomuser.me/api/portraits/lego/1.jpg"; // Fallback image
-              }}
-            />
-          </div>
+          {!artist.isFaq && artist.imageUrl && (
+            <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-neon/50 animate-pulse-neon">
+              <img 
+                src={artist.imageUrl} 
+                alt={artist.name} 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = "https://randomuser.me/api/portraits/lego/1.jpg"; // Fallback image
+                }}
+              />
+            </div>
+          )}
+          
+          {artist.isFaq && (
+            <div className="w-32 h-32 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#39FF14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse-slow">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <path d="M12 17h.01"></path>
+              </svg>
+            </div>
+          )}
           
           <h2 
             id="artist-profile-title"
@@ -59,30 +71,42 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             {artist.name}
           </h2>
           
-          <div className="flex items-center mb-4 text-sm text-light/60">
-            <span className="mr-2">{artist.category}</span>
-            {artist.subCategory && (
-              <>
-                <span className="mx-2">•</span>
-                <span>{artist.subCategory}</span>
-              </>
-            )}
-          </div>
+          {!artist.isFaq && (
+            <div className="flex items-center mb-4 text-sm text-light/60">
+              <span className="mr-2">{artist.category}</span>
+              {artist.subCategory && (
+                <>
+                  <span className="mx-2">•</span>
+                  <span>{artist.subCategory}</span>
+                </>
+              )}
+            </div>
+          )}
           
           <p className="text-center mb-6 text-light/80">
             {artist.info}
           </p>
           
-          <a 
-            href={artist.instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 border border-neon/50 rounded-full hover:bg-neon/10 transition-all duration-300"
-            aria-label={`Visit ${artist.name}'s Instagram profile`}
-          >
-            <Instagram size={18} className="text-neon" />
-            <span>Instagram</span>
-          </a>
+          {!artist.isFaq && artist.instagramUrl && (
+            <a 
+              href={artist.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 border border-neon/50 rounded-full hover:bg-neon/10 transition-all duration-300"
+              aria-label={`Visit ${artist.name}'s Instagram profile`}
+            >
+              <Instagram size={18} className="text-neon" />
+              <span>Instagram</span>
+            </a>
+          )}
+          
+          {/* Future FAQ content will go here */}
+          {artist.isFaq && (
+            <div className="w-full text-center">
+              <p className="text-neon mb-4">Coming Soon</p>
+              <p className="text-light/60">Check back for frequently asked questions about BAD HABITS.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
