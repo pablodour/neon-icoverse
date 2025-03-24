@@ -1,14 +1,24 @@
 
 import React, { useState } from 'react';
-import { eventsData, findArtistById, Event } from '@/utils/data';
+import { eventsData, findArtistById, Event, Artist } from '@/utils/data';
 import { Calendar, MapPin, User } from 'lucide-react';
+import ArtistProfile from './ArtistProfile';
 
 const EventCard: React.FC<{ event: Event }> = ({ event }) => {
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  
   const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+
+  const handleArtistClick = (artistId: string) => {
+    const artist = findArtistById(artistId);
+    if (artist) {
+      setSelectedArtist(artist);
+    }
+  };
 
   return (
     <div className="glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group">
@@ -49,17 +59,25 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             {event.artists.map(artistId => {
               const artist = findArtistById(artistId);
               return artist ? (
-                <span 
+                <button 
                   key={artistId}
-                  className="inline-block px-3 py-1 text-xs rounded-full border border-light/20 hover:border-neon/50 transition-colors"
+                  className="inline-block px-3 py-1 text-xs rounded-full border border-light/20 hover:border-neon/50 hover:text-neon transition-colors cursor-pointer"
+                  onClick={() => handleArtistClick(artistId)}
                 >
                   {artist.name}
-                </span>
+                </button>
               ) : null;
             })}
           </div>
         </div>
       </div>
+
+      {selectedArtist && (
+        <ArtistProfile 
+          artist={selectedArtist} 
+          onClose={() => setSelectedArtist(null)} 
+        />
+      )}
     </div>
   );
 };
@@ -157,3 +175,4 @@ const Events: React.FC = () => {
 };
 
 export default Events;
+
