@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/data';
@@ -11,7 +10,7 @@ const Universe: React.FC = () => {
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
-  const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string} | null>(null);
+  const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string, faqItems: any} | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -84,7 +83,8 @@ const Universe: React.FC = () => {
           setShowNodeInfo({
             id: nodeData.id,
             name: nodeData.name,
-            info: nodeData.description
+            info: nodeData.description,
+            faqItems: nodeData.faqItems
           });
         }
       });
@@ -215,7 +215,8 @@ const Universe: React.FC = () => {
             instagramUrl: "",
             category: "BAD HABITS",
             subCategory: showNodeInfo.name,
-            isInfoNode: true
+            isInfoNode: true,
+            faqItems: showNodeInfo.faqItems
           }} 
           onClose={() => setShowNodeInfo(null)} 
         />

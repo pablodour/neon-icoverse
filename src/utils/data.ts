@@ -7,6 +7,7 @@ export interface Artist {
   category: string;
   subCategory?: string;
   isInfoNode?: boolean;
+  faqItems?: {question: string; answer: string}[];
 }
 
 export interface Event {
@@ -163,7 +164,17 @@ export const universeData: TreeNode = {
     {
       id: "faq",
       name: "FAQ",
-      description: "Frequently asked questions about BAD HABITS events, policies, and community."
+      description: "Frequently asked questions about BAD HABITS events, policies, and community.",
+      faqItems: [
+        {
+          question: "What is a community ticket?",
+          answer: "Lorem ipsum lorem ipsum"
+        },
+        {
+          question: "Is there a dress code?",
+          answer: "Lorem ipsum lorem ipsum"
+        }
+      ]
     }
   ]
 };

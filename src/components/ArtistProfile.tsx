@@ -112,11 +112,17 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             </a>
           )}
           
-          {/* Future FAQ content can go here if needed */}
-          {artist.id === 'faq' && (
-            <div className="w-full text-center">
-              <p className="text-neon mb-4">Coming Soon</p>
-              <p className="text-light/60">Check back for frequently asked questions about BAD HABITS.</p>
+          {/* FAQ items display */}
+          {artist.id === 'faq' && artist.faqItems && artist.faqItems.length > 0 && (
+            <div className="w-full mt-4">
+              <div className="space-y-4">
+                {artist.faqItems.map((item, index) => (
+                  <div key={index} className="border border-neon/30 rounded-lg p-4 hover:border-neon/50 transition-colors">
+                    <h3 className="font-medium text-neon mb-2">{item.question}</h3>
+                    <p className="text-light/70">{item.answer}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
