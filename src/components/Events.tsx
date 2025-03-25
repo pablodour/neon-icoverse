@@ -31,12 +31,13 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
 
   return (
     <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
-      <div className="aspect-[16/9] overflow-hidden relative">
+      {/* Changed container height to a fixed value for better cropping */}
+      <div className="relative h-64 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
           src={photos[currentPhotoIndex]} 
           alt={`${event.title} - ${currentPhotoIndex + 1}`} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&auto=format&fit=crop"; // Fallback image
@@ -44,25 +45,31 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
         />
         {photos.length > 1 && (
           <>
+            {/* Left Arrow */}
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
               }}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              className="absolute left-4 inset-y-0 flex items-center z-20"
               aria-label="Previous Photo"
             >
-              <ChevronLeft size={20} />
+              <div className="bg-black/70 p-2 rounded-full hover:bg-black/80 transition">
+                <ChevronLeft size={24} className="text-white" />
+              </div>
             </button>
+            {/* Right Arrow */}
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              className="absolute right-4 inset-y-0 flex items-center z-20"
               aria-label="Next Photo"
             >
-              <ChevronRight size={20} />
+              <div className="bg-black/70 p-2 rounded-full hover:bg-black/80 transition">
+                <ChevronRight size={24} className="text-white" />
+              </div>
             </button>
           </>
         )}
