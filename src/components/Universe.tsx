@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/dataIndex';
@@ -8,6 +7,7 @@ import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const zoomRef = useRef<d3.ZoomBehavior<Element, unknown> | null>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
@@ -32,33 +32,45 @@ const Universe: React.FC = () => {
     const svg = d3.select(svgRef.current)
       .attr('viewBox', [-dimensions.width / 2, -dimensions.height / 2, dimensions.width, dimensions.height]);
 
+    // Clear previous content
     svg.selectAll('*').remove();
 
-    const root = d3.hierarchy(universeData);
-    const treeLayout = d3.tree().size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2 - 150]);
-    treeLayout(root);
-
-    const zoom = d3.zoom().scaleExtent([0.5, 3]).on('zoom', (event) => {
-      svg.select('g').attr('transform', event.transform);
-    });
-
-    svg.call(zoom);
-
+    // Append a group element that will be zoomed and panned
     const g = svg.append('g');
 
+    // Set up zoom behavior and store it in a ref for later use
+    const zoom = d3.zoom<Element, unknown>()
+      .scaleExtent([0.5, 3])
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+      });
+    zoomRef.current = zoom;
+    svg.call(zoom);
+
+    // Create a radial tree layout using your universeData
+    const root = d3.hierarchy(universeData);
+    const treeLayout = d3.tree()
+      .size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2 - 150]);
+    treeLayout(root);
+
+    // Draw links (paths)
     g.selectAll('path')
       .data(root.links())
       .join('path')
       .attr('fill', 'none')
       .attr('stroke', 'rgba(255,255,255,0.3)')
-      .attr('d', d3.linkRadial().angle(d => d.x).radius(d => d.y));
+      .attr('d', d3.linkRadial()
+        .angle(d => d.x)
+        .radius(d => d.y)
+      );
 
+    // Draw nodes
     const node = g.selectAll('g')
       .data(root.descendants())
       .join('g')
       .attr('transform', d => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`)
       .attr('class', 'cursor-pointer')
-      .on('mouseover', function() {
+      .on('mouseover', function () {
         d3.select(this).select('circle')
           .transition()
           .duration(300)
@@ -66,7 +78,7 @@ const Universe: React.FC = () => {
           .attr('stroke-width', 3)
           .attr('filter', 'drop-shadow(0 0 6px rgba(57,255,20,0.6))');
       })
-      .on('mouseout', function() {
+      .on('mouseout', function () {
         d3.select(this).select('circle')
           .transition()
           .duration(300)
@@ -90,6 +102,7 @@ const Universe: React.FC = () => {
         }
       });
 
+    // Append circle elements to nodes
     node.append('circle')
       .attr('r', d => {
         if (d.depth === 0) return 16;
@@ -100,12 +113,13 @@ const Universe: React.FC = () => {
       .attr('fill', d => {
         if (d.depth === 0) return '#39FF14';
         if (d.data.artists) return '#fff';
-        if (d.data.id === 'vision' || d.data.id === 'rules' || d.data.id === 'faq') return '#39FF14'; // Neon green for vision, rules, faq
+        if (d.data.id === 'vision' || d.data.id === 'rules' || d.data.id === 'faq') return '#39FF14'; // Neon green for specific nodes
         return 'rgba(255,255,255,0.6)';
       })
       .attr('stroke', 'rgba(255,255,255,0.8)')
       .attr('stroke-width', 2);
 
+    // Add image to root node
     node.filter(d => d.depth === 0)
       .append('image')
       .attr('xlink:href', '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png')
@@ -141,6 +155,7 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>');
 
+    // Append artist images
     node.filter(d => d.data.artists)
       .append('image')
       .attr('xlink:href', d => d.data.artists[0].imageUrl)
@@ -150,6 +165,7 @@ const Universe: React.FC = () => {
       .attr('height', 20)
       .attr('clip-path', 'circle(10px)');
 
+    // Append text labels for nodes without artists or description
     node.filter(d => !d.data.artists && d.depth !== 0 && !d.data.description)
       .append('text')
       .attr('dy', '0.35em')
@@ -160,6 +176,7 @@ const Universe: React.FC = () => {
       .attr('font-size', '10px')
       .text(d => d.data.name);
 
+    // Append text labels for nodes with description
     node.filter(d => d.data.description)
       .append('text')
       .attr('dy', '0.35em')
@@ -170,8 +187,17 @@ const Universe: React.FC = () => {
       .attr('font-size', '12px')
       .attr('font-weight', 'bold')
       .text(d => d.data.name);
-
   }, [dimensions]);
+
+  // Handler to reset the zoom (center the view)
+  const resetView = () => {
+    if (svgRef.current && zoomRef.current) {
+      d3.select(svgRef.current)
+        .transition()
+        .duration(750)
+        .call(zoomRef.current.transform, d3.zoomIdentity);
+    }
+  };
 
   const badHabitsInfo = {
     id: "badhabits",
@@ -193,8 +219,15 @@ const Universe: React.FC = () => {
           </p>
         </div>
 
-        <div ref={containerRef} className="w-full h-[600px] rounded-lg glassmorphism overflow-hidden">
+        <div ref={containerRef} className="relative w-full h-[600px] rounded-lg glassmorphism overflow-hidden">
           <svg ref={svgRef} className="w-full h-full" />
+          {/* Centering Button */}
+          <button 
+            onClick={resetView}
+            className="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 rounded shadow hover:bg-gray-700 transition"
+          >
+            Center
+          </button>
         </div>
       </div>
 
