@@ -1,6 +1,6 @@
 
 import * as d3 from 'd3';
-import { TreeNode } from './data';
+import { TreeNode } from './types';
 
 // Convert polar coordinates to Cartesian
 export const project = (x: number, y: number) => {
