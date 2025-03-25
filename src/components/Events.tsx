@@ -26,13 +26,13 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     setExpanded(!expanded);
   };
 
-  // Use event.images if available, otherwise fallback to event.imageUrl
+  // Use event.images if available; otherwise, fallback to event.imageUrl
   const photos = event.images && event.images.length > 0 ? event.images : [event.imageUrl];
 
   return (
     <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
-      {/* Changed container height to a fixed value for better cropping */}
-      <div className="relative h-64 overflow-hidden">
+      {/* Use aspect ratio container for proper cropping */}
+      <div className="relative aspect-[16/9] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
           src={photos[currentPhotoIndex]} 
@@ -71,6 +71,15 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
                 <ChevronRight size={24} className="text-white" />
               </div>
             </button>
+            {/* Dots indicator */}
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-20">
+              {photos.map((_, index) => (
+                <div 
+                  key={index} 
+                  className={`w-2 h-2 rounded-full ${currentPhotoIndex === index ? 'bg-neon' : 'bg-white/50'}`}
+                />
+              ))}
+            </div>
           </>
         )}
       </div>
