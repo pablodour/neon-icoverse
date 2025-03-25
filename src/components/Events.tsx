@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { eventsData, findArtistById, Event, Artist } from '@/utils/dataIndex';
-import { Calendar, MapPin, User, Ticket, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Calendar,
+  MapPin,
+  User,
+  Ticket,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  X
+} from 'lucide-react';
 import ArtistProfile from './ArtistProfile';
 import { Button } from './ui/button';
 
@@ -8,6 +18,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [fullImageOpen, setFullImageOpen] = useState(false);
 
   const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -31,13 +42,14 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
 
   return (
     <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
-      {/* Changed to a fixed height container to ensure proper cropping */}
+      {/* Fixed-height container for proper cropping */}
       <div className="relative h-64 w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
           src={photos[currentPhotoIndex]} 
           alt={`${event.title} - ${currentPhotoIndex + 1}`} 
-          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+          onClick={() => setFullImageOpen(true)}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&auto=format&fit=crop"; // Fallback image
@@ -45,7 +57,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
         />
         {photos.length > 1 && (
           <>
-            {/* Left Arrow */}
+            {/* Left Arrow on Card */}
             <button 
               onClick={(e) => {
                 e.stopPropagation();
@@ -58,7 +70,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
                 <ChevronLeft size={24} className="text-white" />
               </div>
             </button>
-            {/* Right Arrow */}
+            {/* Right Arrow on Card */}
             <button 
               onClick={(e) => {
                 e.stopPropagation();
@@ -71,7 +83,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
                 <ChevronRight size={24} className="text-white" />
               </div>
             </button>
-            {/* Dots indicator */}
+            {/* Dot Indicators */}
             <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-20">
               {photos.map((_, index) => (
                 <div 
@@ -157,6 +169,65 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           artist={selectedArtist} 
           onClose={() => setSelectedArtist(null)} 
         />
+      )}
+
+      {/* Modal for Full Image View */}
+      {fullImageOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="relative max-w-full max-h-full">
+            <img 
+              src={photos[currentPhotoIndex]} 
+              alt={`${event.title} Full Image`} 
+              className="max-w-full max-h-full object-contain"
+            />
+            {/* Close Button */}
+            <button
+              onClick={() => setFullImageOpen(false)}
+              className="absolute top-4 right-4 bg-black/70 p-2 rounded-full hover:bg-black/80 transition"
+              aria-label="Close Full Image"
+            >
+              <X size={24} className="text-white" />
+            </button>
+            {/* Navigation Arrows in Modal */}
+            {photos.length > 1 && (
+              <>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
+                  }}
+                  className="absolute left-4 inset-y-0 flex items-center z-50"
+                  aria-label="Previous Photo"
+                >
+                  <div className="bg-black/70 p-2 rounded-full hover:bg-black/80 transition">
+                    <ChevronLeft size={24} className="text-white" />
+                  </div>
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
+                  }}
+                  className="absolute right-4 inset-y-0 flex items-center z-50"
+                  aria-label="Next Photo"
+                >
+                  <div className="bg-black/70 p-2 rounded-full hover:bg-black/80 transition">
+                    <ChevronRight size={24} className="text-white" />
+                  </div>
+                </button>
+                {/* Dot Indicators in Modal */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-50">
+                  {photos.map((_, index) => (
+                    <div 
+                      key={index} 
+                      className={`w-2 h-2 rounded-full ${currentPhotoIndex === index ? 'bg-neon' : 'bg-white/50'}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
