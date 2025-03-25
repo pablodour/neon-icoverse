@@ -40,6 +40,11 @@ export const eventsData: Event[] = [
     location: "Art Space, Oslo",
     description: "A unique blend of indie and electronic rock sounds that push boundaries.",
     imageUrl: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=800&auto=format&fit=crop",
+    images: [
+    "/lovable-uploads/esexua1.jpeg",
+    "/lovable-uploads/esexua2.jpeg",
+    "/lovable-uploads/esexua3.jpeg"
+    ],
     artists: ["artist6", "artist7"],
     isPast: false
   },
