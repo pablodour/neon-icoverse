@@ -1,8 +1,9 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/data';
 import ArtistProfile from './ArtistProfile';
-import { Instagram, Lightbulb, Shield, HelpCircle } from 'lucide-react';
+import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -98,9 +99,7 @@ const Universe: React.FC = () => {
       .attr('fill', d => {
         if (d.depth === 0) return '#39FF14';
         if (d.data.artists) return '#fff';
-        if (d.data.id === 'vision') return '#FFD700'; // Gold for Vision
-        if (d.data.id === 'rules') return '#FF6B6B'; // Red for Rules
-        if (d.data.id === 'faq') return '#4B9CD3'; // Blue for FAQ
+        if (d.data.id === 'vision' || d.data.id === 'rules' || d.data.id === 'faq') return '#39FF14'; // Neon green for vision, rules, faq
         return 'rgba(255,255,255,0.6)';
       })
       .attr('stroke', 'rgba(255,255,255,0.8)')
@@ -114,29 +113,32 @@ const Universe: React.FC = () => {
       .attr('width', 24)
       .attr('height', 24);
 
+    // Vision node with white icon
     node.filter(d => d.data.id === 'vision')
       .append('svg:foreignObject')
       .attr('width', 20)
       .attr('height', 20)
       .attr('x', -10)
       .attr('y', -10)
-      .html('<div style="color: black; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>');
+      .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>');
 
+    // Rules node with white icon
     node.filter(d => d.data.id === 'rules')
       .append('svg:foreignObject')
       .attr('width', 20)
       .attr('height', 20)
       .attr('x', -10)
       .attr('y', -10)
-      .html('<div style="color: black; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>');
+      .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>');
 
+    // FAQ node with white icon
     node.filter(d => d.data.id === 'faq')
       .append('svg:foreignObject')
       .attr('width', 20)
       .attr('height', 20)
       .attr('x', -10)
       .attr('y', -10)
-      .html('<div style="color: black; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>');
+      .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>');
 
     node.filter(d => d.data.artists)
       .append('image')
@@ -209,11 +211,11 @@ const Universe: React.FC = () => {
             id: showNodeInfo.id,
             name: showNodeInfo.name.toUpperCase(),
             info: showNodeInfo.info,
-            imageUrl: showNodeInfo.id === "faq" ? "" : "/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png",
-            instagramUrl: showNodeInfo.id === "faq" ? "" : "https://www.instagram.com/badhabits.oslo/",
+            imageUrl: "",
+            instagramUrl: "",
             category: "BAD HABITS",
             subCategory: showNodeInfo.name,
-            isFaq: showNodeInfo.id === "faq"
+            isInfoNode: true
           }} 
           onClose={() => setShowNodeInfo(null)} 
         />

@@ -6,7 +6,7 @@ export interface Artist {
   instagramUrl: string;
   category: string;
   subCategory?: string;
-  isFaq?: boolean;
+  isInfoNode?: boolean;
 }
 
 export interface Event {

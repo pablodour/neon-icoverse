@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Artist } from '@/utils/data';
-import { Instagram } from 'lucide-react';
+import { Instagram, Lightbulb, Shield, HelpCircle } from 'lucide-react';
 
 interface ArtistProfileProps {
   artist: Artist;
@@ -9,6 +9,22 @@ interface ArtistProfileProps {
 }
 
 const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
+  // Determine what icon to show based on the node type
+  const renderIcon = () => {
+    if (!artist.isInfoNode) return null;
+    
+    switch(artist.id) {
+      case 'vision':
+        return <Lightbulb size={64} className="text-neon animate-pulse-slow" />;
+      case 'rules':
+        return <Shield size={64} className="text-neon animate-pulse-slow" />;
+      case 'faq':
+        return <HelpCircle size={64} className="text-neon animate-pulse-slow" />;
+      default:
+        return null;
+    }
+  };
+  
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -40,7 +56,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
         </button>
         
         <div className="flex flex-col items-center">
-          {!artist.isFaq && artist.imageUrl && (
+          {!artist.isInfoNode && artist.imageUrl && (
             <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-neon/50 animate-pulse-neon">
               <img 
                 src={artist.imageUrl} 
@@ -54,13 +70,9 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             </div>
           )}
           
-          {artist.isFaq && (
+          {artist.isInfoNode && (
             <div className="w-32 h-32 flex items-center justify-center mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#39FF14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse-slow">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <path d="M12 17h.01"></path>
-              </svg>
+              {renderIcon()}
             </div>
           )}
           
@@ -71,7 +83,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             {artist.name}
           </h2>
           
-          {!artist.isFaq && (
+          {!artist.isInfoNode && (
             <div className="flex items-center mb-4 text-sm text-light/60">
               <span className="mr-2">{artist.category}</span>
               {artist.subCategory && (
@@ -87,7 +99,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             {artist.info}
           </p>
           
-          {!artist.isFaq && artist.instagramUrl && (
+          {!artist.isInfoNode && artist.instagramUrl && (
             <a 
               href={artist.instagramUrl}
               target="_blank"
@@ -100,8 +112,8 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
             </a>
           )}
           
-          {/* Future FAQ content will go here */}
-          {artist.isFaq && (
+          {/* Future FAQ content can go here if needed */}
+          {artist.id === 'faq' && (
             <div className="w-full text-center">
               <p className="text-neon mb-4">Coming Soon</p>
               <p className="text-light/60">Check back for frequently asked questions about BAD HABITS.</p>
