@@ -1,14 +1,14 @@
-
 import React, { useState } from 'react';
 import { eventsData, findArtistById, Event, Artist } from '@/utils/dataIndex';
-import { Calendar, MapPin, User, Ticket, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, MapPin, User, Ticket, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import ArtistProfile from './ArtistProfile';
 import { Button } from './ui/button';
 
 const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [expanded, setExpanded] = useState(false);
-  
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
   const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -26,19 +26,46 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     setExpanded(!expanded);
   };
 
+  // Use event.images if available, otherwise fallback to event.imageUrl
+  const photos = event.images && event.images.length > 0 ? event.images : [event.imageUrl];
+
   return (
     <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
       <div className="aspect-[16/9] overflow-hidden relative">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
-          src={event.imageUrl} 
-          alt={event.title} 
+          src={photos[currentPhotoIndex]} 
+          alt={`${event.title} - ${currentPhotoIndex + 1}`} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&auto=format&fit=crop"; // Fallback image
           }}
         />
+        {photos.length > 1 && (
+          <>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
+              }}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              aria-label="Previous Photo"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
+              }}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition"
+              aria-label="Next Photo"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
       </div>
       
       <div className="p-6">
@@ -125,8 +152,6 @@ const Events: React.FC = () => {
   const upcomingEvents = eventsData.filter(event => !event.isPast);
   const pastEvents = eventsData.filter(event => event.isPast);
   
-  const displayedEvents = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
-
   return (
     <section id="events" className="min-h-screen bg-dark py-20 px-6">
       <div className="container mx-auto">
