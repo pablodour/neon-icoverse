@@ -9,7 +9,7 @@ export const eventsData: Event[] = [
     date: "2023-12-15",
     location: "Club Arena, Oslo",
     description: "A night of pulsating techno beats featuring top artists from our universe.",
-    imageUrl: ["https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&auto=format&fit=crop"],
+    imageUrl: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&auto=format&fit=crop",
     artists: ["artist1", "artist2"],
     isPast: true
   },
