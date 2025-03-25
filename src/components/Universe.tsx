@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/dataIndex';
 import ArtistProfile from './ArtistProfile';
-import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
+import { Compass, Lightbulb, Shield, HelpCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button'; // Adjust the import as needed
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -11,7 +12,7 @@ const Universe: React.FC = () => {
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
-  const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string, faqItems: any} | null>(null);
+  const [showNodeInfo, setShowNodeInfo] = useState<{ id: string; name: string; info: string; faqItems: any } | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -32,13 +33,10 @@ const Universe: React.FC = () => {
     const svg = d3.select(svgRef.current)
       .attr('viewBox', [-dimensions.width / 2, -dimensions.height / 2, dimensions.width, dimensions.height]);
 
-    // Clear previous content
     svg.selectAll('*').remove();
 
-    // Append a group element that will be zoomed and panned
     const g = svg.append('g');
 
-    // Set up zoom behavior and store it in a ref for later use
     const zoom = d3.zoom<Element, unknown>()
       .scaleExtent([0.5, 3])
       .on('zoom', (event) => {
@@ -47,13 +45,11 @@ const Universe: React.FC = () => {
     zoomRef.current = zoom;
     svg.call(zoom);
 
-    // Create a radial tree layout using your universeData
     const root = d3.hierarchy(universeData);
     const treeLayout = d3.tree()
       .size([2 * Math.PI, Math.min(dimensions.width, dimensions.height) / 2 - 150]);
     treeLayout(root);
 
-    // Draw links (paths)
     g.selectAll('path')
       .data(root.links())
       .join('path')
@@ -64,7 +60,6 @@ const Universe: React.FC = () => {
         .radius(d => d.y)
       );
 
-    // Draw nodes
     const node = g.selectAll('g')
       .data(root.descendants())
       .join('g')
@@ -102,7 +97,6 @@ const Universe: React.FC = () => {
         }
       });
 
-    // Append circle elements to nodes
     node.append('circle')
       .attr('r', d => {
         if (d.depth === 0) return 16;
@@ -113,13 +107,12 @@ const Universe: React.FC = () => {
       .attr('fill', d => {
         if (d.depth === 0) return '#39FF14';
         if (d.data.artists) return '#fff';
-        if (d.data.id === 'vision' || d.data.id === 'rules' || d.data.id === 'faq') return '#39FF14'; // Neon green for specific nodes
+        if (d.data.id === 'vision' || d.data.id === 'rules' || d.data.id === 'faq') return '#39FF14';
         return 'rgba(255,255,255,0.6)';
       })
       .attr('stroke', 'rgba(255,255,255,0.8)')
       .attr('stroke-width', 2);
 
-    // Add image to root node
     node.filter(d => d.depth === 0)
       .append('image')
       .attr('xlink:href', '/lovable-uploads/1514bc5a-48b4-4c37-976f-4a1b3c2ab813.png')
@@ -128,7 +121,6 @@ const Universe: React.FC = () => {
       .attr('width', 24)
       .attr('height', 24);
 
-    // Vision node with white icon
     node.filter(d => d.data.id === 'vision')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -137,7 +129,6 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>');
 
-    // Rules node with white icon
     node.filter(d => d.data.id === 'rules')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -146,7 +137,6 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>');
 
-    // FAQ node with white icon
     node.filter(d => d.data.id === 'faq')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -155,7 +145,6 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>');
 
-    // Append artist images
     node.filter(d => d.data.artists)
       .append('image')
       .attr('xlink:href', d => d.data.artists[0].imageUrl)
@@ -165,7 +154,6 @@ const Universe: React.FC = () => {
       .attr('height', 20)
       .attr('clip-path', 'circle(10px)');
 
-    // Append text labels for nodes without artists or description
     node.filter(d => !d.data.artists && d.depth !== 0 && !d.data.description)
       .append('text')
       .attr('dy', '0.35em')
@@ -176,7 +164,6 @@ const Universe: React.FC = () => {
       .attr('font-size', '10px')
       .text(d => d.data.name);
 
-    // Append text labels for nodes with description
     node.filter(d => d.data.description)
       .append('text')
       .attr('dy', '0.35em')
@@ -189,8 +176,7 @@ const Universe: React.FC = () => {
       .text(d => d.data.name);
   }, [dimensions]);
 
-  // Handler to reset the zoom (center the view)
-  const resetView = () => {
+  const handleResetView = () => {
     if (svgRef.current && zoomRef.current) {
       d3.select(svgRef.current)
         .transition()
@@ -222,12 +208,17 @@ const Universe: React.FC = () => {
         <div ref={containerRef} className="relative w-full h-[600px] rounded-lg glassmorphism overflow-hidden">
           <svg ref={svgRef} className="w-full h-full" />
           {/* Centering Button */}
-          <button 
-            onClick={resetView}
-            className="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 rounded shadow hover:bg-gray-700 transition"
-          >
-            Center
-          </button>
+          <div className="absolute top-8 right-8 z-10">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleResetView}
+              className="bg-black/50 border-white/20 text-white hover:bg-black/70 hover:text-neon rounded-full"
+              title="Center View"
+            >
+              <Compass className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -240,7 +231,7 @@ const Universe: React.FC = () => {
       )}
 
       {showNodeInfo && (
-        <ArtistProfile 
+        <ArtistProfile
           artist={{
             id: showNodeInfo.id,
             name: showNodeInfo.name.toUpperCase(),
@@ -251,8 +242,8 @@ const Universe: React.FC = () => {
             subCategory: showNodeInfo.name,
             isInfoNode: true,
             faqItems: showNodeInfo.faqItems
-          }} 
-          onClose={() => setShowNodeInfo(null)} 
+          }}
+          onClose={() => setShowNodeInfo(null)}
         />
       )}
     </section>
