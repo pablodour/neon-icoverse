@@ -26,13 +26,13 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     setExpanded(!expanded);
   };
 
-  // Use event.images if available; otherwise, fallback to event.imageUrl
+  // Use event.images if available; otherwise fallback to event.imageUrl.
   const photos = event.images && event.images.length > 0 ? event.images : [event.imageUrl];
 
   return (
     <div className={`glassmorphism rounded-lg overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] group ${expanded ? 'col-span-full' : ''}`}>
-      {/* Use aspect ratio container for proper cropping */}
-      <div className="relative aspect-[16/9] overflow-hidden">
+      {/* Changed to a fixed height container to ensure proper cropping */}
+      <div className="relative h-64 w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
         <img 
           src={photos[currentPhotoIndex]} 
