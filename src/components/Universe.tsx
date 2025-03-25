@@ -1,6 +1,7 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { universeData, Artist, TreeNode } from '@/utils/data';
+import { universeData, Artist, TreeNode } from '@/utils/dataIndex';
 import ArtistProfile from './ArtistProfile';
 import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
 

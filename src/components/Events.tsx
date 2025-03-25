@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { eventsData, findArtistById, Event, Artist } from '@/utils/data';
+import { eventsData, findArtistById, Event, Artist } from '@/utils/dataIndex';
 import { Calendar, MapPin, User, Ticket, ChevronDown, ChevronUp } from 'lucide-react';
 import ArtistProfile from './ArtistProfile';
 import { Button } from './ui/button';

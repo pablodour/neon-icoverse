@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Artist } from '@/utils/data';
+import { Artist } from '@/utils/types';
 import { Instagram, Lightbulb, Shield, HelpCircle } from 'lucide-react';
 
 interface ArtistProfileProps {
