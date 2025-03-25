@@ -1,10 +1,9 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/dataIndex';
 import ArtistProfile from './ArtistProfile';
-import { Lightbulb, Shield, HelpCircle, Compass } from 'lucide-react';
-import { Button } from './ui/button';
-import { resetZoom } from '@/utils/visualizationUtils';
+import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -13,7 +12,6 @@ const Universe: React.FC = () => {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
   const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string, faqItems: any} | null>(null);
-  const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -42,17 +40,9 @@ const Universe: React.FC = () => {
 
     const zoom = d3.zoom().scaleExtent([0.5, 3]).on('zoom', (event) => {
       svg.select('g').attr('transform', event.transform);
-      setTransform({ x: event.transform.x, y: event.transform.y, k: event.transform.k });
     });
 
     svg.call(zoom);
-
-    if (transform.x === 0 && transform.y === 0) {
-      setTransform({ x: dimensions.width / 2, y: dimensions.height / 2, k: 1 });
-      svg.call(zoom.transform, d3.zoomIdentity.translate(dimensions.width / 2, dimensions.height / 2).scale(1));
-    } else {
-      svg.call(zoom.transform, d3.zoomIdentity.translate(transform.x, transform.y).scale(transform.k));
-    }
 
     const g = svg.append('g');
 
@@ -124,6 +114,7 @@ const Universe: React.FC = () => {
       .attr('width', 24)
       .attr('height', 24);
 
+    // Vision node with white icon
     node.filter(d => d.data.id === 'vision')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -132,6 +123,7 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>');
 
+    // Rules node with white icon
     node.filter(d => d.data.id === 'rules')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -140,6 +132,7 @@ const Universe: React.FC = () => {
       .attr('y', -10)
       .html('<div style="color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>');
 
+    // FAQ node with white icon
     node.filter(d => d.data.id === 'faq')
       .append('svg:foreignObject')
       .attr('width', 20)
@@ -178,19 +171,7 @@ const Universe: React.FC = () => {
       .attr('font-weight', 'bold')
       .text(d => d.data.name);
 
-  }, [dimensions, transform]);
-
-  const handleResetView = () => {
-    if (svgRef.current) {
-      resetZoom(dimensions.width, dimensions.height, setTransform);
-      
-      const svg = d3.select(svgRef.current);
-      svg.transition().duration(750).call(
-        d3.zoom().transform,
-        d3.zoomIdentity.translate(dimensions.width / 2, dimensions.height / 2).scale(1)
-      );
-    }
-  };
+  }, [dimensions]);
 
   const badHabitsInfo = {
     id: "badhabits",
@@ -203,7 +184,7 @@ const Universe: React.FC = () => {
   };
 
   return (
-    <section id="universe" className="min-h-screen bg-dark py-20 px-6 relative">
+    <section id="universe" className="min-h-screen bg-dark py-20 px-6">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h2 className="section-title">Universe</h2>
@@ -212,19 +193,7 @@ const Universe: React.FC = () => {
           </p>
         </div>
 
-        <div className="absolute top-8 right-8 z-10">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={handleResetView}
-            className="bg-black/50 border-white/20 text-white hover:bg-black/70 hover:text-neon"
-            title="Center View"
-          >
-            <Compass className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <div ref={containerRef} className="w-full h-[600px] rounded-lg glassmorphism overflow-hidden relative">
+        <div ref={containerRef} className="w-full h-[600px] rounded-lg glassmorphism overflow-hidden">
           <svg ref={svgRef} className="w-full h-full" />
         </div>
       </div>
