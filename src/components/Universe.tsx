@@ -1,9 +1,10 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { universeData, Artist, TreeNode } from '@/utils/dataIndex';
 import ArtistProfile from './ArtistProfile';
-import { Lightbulb, Shield, HelpCircle } from 'lucide-react';
+import { Lightbulb, Shield, HelpCircle, Compass } from 'lucide-react';
+import { Button } from './ui/button';
+import { resetZoom } from '@/utils/visualizationUtils';
 
 const Universe: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -12,6 +13,7 @@ const Universe: React.FC = () => {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [showBadHabitsInfo, setShowBadHabitsInfo] = useState(false);
   const [showNodeInfo, setShowNodeInfo] = useState<{id: string, name: string, info: string, faqItems: any} | null>(null);
+  const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -40,9 +42,17 @@ const Universe: React.FC = () => {
 
     const zoom = d3.zoom().scaleExtent([0.5, 3]).on('zoom', (event) => {
       svg.select('g').attr('transform', event.transform);
+      setTransform({ x: event.transform.x, y: event.transform.y, k: event.transform.k });
     });
 
     svg.call(zoom);
+
+    if (transform.x === 0 && transform.y === 0) {
+      setTransform({ x: dimensions.width / 2, y: dimensions.height / 2, k: 1 });
+      svg.call(zoom.transform, d3.zoomIdentity.translate(dimensions.width / 2, dimensions.height / 2).scale(1));
+    } else {
+      svg.call(zoom.transform, d3.zoomIdentity.translate(transform.x, transform.y).scale(transform.k));
+    }
 
     const g = svg.append('g');
 
@@ -168,7 +178,19 @@ const Universe: React.FC = () => {
       .attr('font-weight', 'bold')
       .text(d => d.data.name);
 
-  }, [dimensions]);
+  }, [dimensions, transform]);
+
+  const handleResetView = () => {
+    if (svgRef.current) {
+      resetZoom(dimensions.width, dimensions.height, setTransform);
+      
+      const svg = d3.select(svgRef.current);
+      svg.transition().duration(750).call(
+        d3.zoom().transform,
+        d3.zoomIdentity.translate(dimensions.width / 2, dimensions.height / 2).scale(1)
+      );
+    }
+  };
 
   const badHabitsInfo = {
     id: "badhabits",
@@ -181,7 +203,7 @@ const Universe: React.FC = () => {
   };
 
   return (
-    <section id="universe" className="min-h-screen bg-dark py-20 px-6">
+    <section id="universe" className="min-h-screen bg-dark py-20 px-6 relative">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h2 className="section-title">Universe</h2>
@@ -190,7 +212,19 @@ const Universe: React.FC = () => {
           </p>
         </div>
 
-        <div ref={containerRef} className="w-full h-[600px] rounded-lg glassmorphism overflow-hidden">
+        <div className="absolute top-8 right-8 z-10">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={handleResetView}
+            className="bg-black/50 border-white/20 text-white hover:bg-black/70 hover:text-neon"
+            title="Center View"
+          >
+            <Compass className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <div ref={containerRef} className="w-full h-[600px] rounded-lg glassmorphism overflow-hidden relative">
           <svg ref={svgRef} className="w-full h-full" />
         </div>
       </div>
