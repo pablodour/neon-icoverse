@@ -9,6 +9,7 @@ export interface Artist {
   subCategory?: string;
   isInfoNode?: boolean;
   faqItems?: {question: string; answer: string}[];
+  iconName?: string;
 }
 
 export interface Event {
@@ -29,4 +30,5 @@ export interface TreeNode {
   artists?: Artist[];
   description?: string;
   faqItems?: {question: string; answer: string}[];
+  iconName?: string;
 }

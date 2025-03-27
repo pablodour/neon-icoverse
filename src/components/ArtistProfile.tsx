@@ -1,7 +1,20 @@
 
 import React from 'react';
 import { Artist } from '@/utils/types';
-import { Instagram, Lightbulb, Shield, HelpCircle } from 'lucide-react';
+import { 
+  Instagram, 
+  Lightbulb, 
+  Shield, 
+  HelpCircle,
+  Ticket,
+  Shirt,
+  Heart,
+  Accessibility,
+  DoorOpen,
+  Camera,
+  Globe,
+  MailSearch
+} from 'lucide-react';
 
 interface ArtistProfileProps {
   artist: Artist;
@@ -20,6 +33,22 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
         return <Shield size={64} className="text-neon animate-pulse-slow" />;
       case 'faq':
         return <HelpCircle size={64} className="text-neon animate-pulse-slow" />;
+      case 'tickets':
+        return <Ticket size={64} className="text-neon animate-pulse-slow" />;
+      case 'dresscode':
+        return <Shirt size={64} className="text-neon animate-pulse-slow" />;
+      case 'pleasure-rooms':
+        return <Heart size={64} className="text-neon animate-pulse-slow" />;
+      case 'accessibility':
+        return <Accessibility size={64} className="text-neon animate-pulse-slow" />;
+      case 'doors-entry':
+        return <DoorOpen size={64} className="text-neon animate-pulse-slow" />;
+      case 'photography-consent':
+        return <Camera size={64} className="text-neon animate-pulse-slow" />;
+      case 'bad-habits-universe':
+        return <Globe size={64} className="text-neon animate-pulse-slow" />;
+      case 'lost-found':
+        return <MailSearch size={64} className="text-neon animate-pulse-slow" />;
       default:
         return null;
     }
@@ -113,7 +142,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
           )}
           
           {/* FAQ items display */}
-          {artist.id === 'faq' && artist.faqItems && artist.faqItems.length > 0 && (
+          {artist.faqItems && artist.faqItems.length > 0 && (
             <div className="w-full mt-4">
               <div className="space-y-4">
                 {artist.faqItems.map((item, index) => (
