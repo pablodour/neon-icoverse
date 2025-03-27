@@ -125,7 +125,7 @@ export const universeData: TreeNode = {
     },
     {
       id: "video-photographers",
-      name: "🎥 Video & Photographers",
+      name: "Video & Photographers",
       description: "The heat, the sweat & our silouttes. Our videographers don't just document; they translate the energy of the night into pure visual rhythm. This is how we remember the unforgettable.",
       iconName: "camera",
       children: [
