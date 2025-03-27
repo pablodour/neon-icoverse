@@ -75,7 +75,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
       
       {/* Modal content with fixed size */}
       <div 
-        className="relative glassmorphism rounded-lg p-6 max-w-md w-full max-h-[80vh] flex flex-col animate-fade-in"
+        className="relative glassmorphism rounded-lg p-6 max-w-md w-full h-[80vh] flex flex-col animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -89,7 +89,7 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
           </svg>
         </button>
         
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 -mr-6 pr-6 pb-4">
           <div className="flex flex-col items-center">
             {!artist.isInfoNode && artist.imageUrl && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-neon/50 animate-pulse-neon">
