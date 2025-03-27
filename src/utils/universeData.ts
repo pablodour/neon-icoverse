@@ -211,6 +211,10 @@ export const universeData: TreeNode = {
             {
               question: "I didn't get a confirmation email — what do I do?",
               answer: "Check your spam folder first. If it's not there, contact us through Instagram @badhabits.oslo or email us."
+            },
+            {
+              question: "What if I get sick or my plans change?",
+              answer: "Unfortunately, we don't offer refunds or ticket transfers – not even in cases of illness or last-minute plan changes. Since all our events and workshops are project-based, every ticket goes directly into making that specific moment happen. We hope you'll see your ticket as more than just entry – but as a contribution to keeping an independent, vibrant and radically free scene alive in Oslo. Your support helps us create magic, push boundaries, and hold space for pleasure, art and community. Even if you can't join us this time, your ticket becomes a small act of support. A little donation to the culture. A drop of juicy karma. And for that – we adore you. 💋"
             }
           ]
         },
