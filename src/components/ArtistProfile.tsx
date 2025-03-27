@@ -13,7 +13,9 @@ import {
   DoorOpen,
   Camera,
   Globe,
-  MailSearch
+  MailSearch,
+  Film,
+  Video
 } from 'lucide-react';
 
 interface ArtistProfileProps {
@@ -49,6 +51,8 @@ const ArtistProfile: React.FC<ArtistProfileProps> = ({ artist, onClose }) => {
         return <Globe size={64} className="text-neon animate-pulse-slow" />;
       case 'lost-found':
         return <MailSearch size={64} className="text-neon animate-pulse-slow" />;
+      case 'video-photographers':
+        return <Camera size={64} className="text-neon animate-pulse-slow" />;
       default:
         return null;
     }

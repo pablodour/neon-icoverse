@@ -124,6 +124,62 @@ export const universeData: TreeNode = {
       ]
     },
     {
+      id: "video-photographers",
+      name: "🎥 Video & Photographers",
+      description: "The heat, the sweat & our silouttes. Our videographers don't just document; they translate the energy of the night into pure visual rhythm. This is how we remember the unforgettable.",
+      iconName: "camera",
+      children: [
+        {
+          id: "videographers",
+          name: "Videographers",
+          artists: [
+            {
+              id: "video1",
+              name: "Motion Masters",
+              info: "Capturing the fluidity of movement and energy on the dance floor.",
+              imageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+              instagramUrl: "https://instagram.com/",
+              category: "Visual",
+              subCategory: "Videographer"
+            },
+            {
+              id: "video2",
+              name: "Night Visuals",
+              info: "Specializing in low-light cinematography that preserves the mystery of the night.",
+              imageUrl: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
+              instagramUrl: "https://instagram.com/",
+              category: "Visual",
+              subCategory: "Videographer"
+            }
+          ]
+        },
+        {
+          id: "photographers",
+          name: "Photographers",
+          artists: [
+            {
+              id: "photo1",
+              name: "Frame Catcher",
+              info: "Finding the perfect moment in chaos - each image tells a story.",
+              imageUrl: "https://images.unsplash.com/photo-1473091534298-04dcbce3278c",
+              instagramUrl: "https://instagram.com/",
+              category: "Visual",
+              subCategory: "Photographer"
+            },
+            {
+              id: "photo2",
+              name: "Light Hunter",
+              info: "Exploring the interplay between darkness and light in club environments.",
+              imageUrl: "https://randomuser.me/api/portraits/women/45.jpg",
+              instagramUrl: "https://instagram.com/",
+              category: "Visual",
+              subCategory: "Photographer"
+            }
+          ]
+        }
+      ]
+    },
+    {
       id: "vision",
       name: "Vision",
       description: "Our vision is to give local artists, performers, and creative beings a platform to express themselves. We want to contribute to a community where individuals feel safer expressing themselves and being themselves. We want to challenge Oslo's club scene with more elements of performance and visual art as decor to give an ever-changing atmosphere."
