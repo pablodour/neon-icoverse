@@ -21,6 +21,7 @@ export interface Event {
   imageUrl: string;
   artists: string[];
   isPast: boolean;
+  images?: string[]; // Add the optional images property
 }
 
 export interface TreeNode {
