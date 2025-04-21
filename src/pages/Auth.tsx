@@ -4,25 +4,22 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 
 const Auth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is already authenticated
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      setIsAuthenticated(true);
+    if (isAuthenticated) {
       navigate('/');
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleGoogleSuccess = (credentialResponse: any) => {
-    // Store the token in localStorage
-    localStorage.setItem('auth_token', credentialResponse.credential);
-    // Update auth state
-    setIsAuthenticated(true);
+    // Store the token and update auth state
+    login(credentialResponse.credential);
     // Show success message
     toast.success('Successfully signed in with Google');
     // Redirect to home page
@@ -31,11 +28,11 @@ const Auth = () => {
 
   const handleGoogleError = () => {
     toast.error('Google sign in failed. Please try again.');
+    console.error('Google sign in failed');
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    setIsAuthenticated(false);
+    logout();
     toast.info('You have been logged out');
   };
 
@@ -69,6 +66,11 @@ const Auth = () => {
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
                 useOneTap
+                type="standard"
+                theme="filled_black"
+                text="signin_with"
+                shape="rectangular"
+                locale="en"
               />
             </div>
           )}
