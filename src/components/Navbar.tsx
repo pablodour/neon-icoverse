@@ -1,6 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { LogIn, LogOut } from "lucide-react";
 
 interface NavItemProps {
   title: string;
@@ -40,6 +44,8 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
   const [scrolled, setScrolled] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +55,14 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleAuthClick = () => {
+    if (isAuthenticated) {
+      logout();
+    } else {
+      navigate('/auth');
+    }
+  };
 
   return (
     <header 
@@ -68,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
           </a>
         </div>
         
-        <nav aria-label="Main navigation">
+        <nav aria-label="Main navigation" className="flex items-center">
           <ul className="flex space-x-2 md:space-x-8">
             <NavItem 
               title="Universe" 
@@ -89,6 +103,23 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeSection }) => {
               onClick={() => onNavigate('contact')}
             />
           </ul>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleAuthClick}
+            className="ml-4 text-white hover:bg-white/10 flex items-center gap-2"
+          >
+            {isAuthenticated ? (
+              <>
+                <LogOut size={16} /> Logout
+              </>
+            ) : (
+              <>
+                <LogIn size={16} /> Login
+              </>
+            )}
+          </Button>
         </nav>
       </div>
     </header>
